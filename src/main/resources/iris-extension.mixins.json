@@ -1,0 +1,16 @@
+{
+	"required": true,
+	"package": "merlin1809.irisextension.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+		"GetDragonKilledMixin",
+		"DragonFightMixin",
+		"PlayerJoinMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}

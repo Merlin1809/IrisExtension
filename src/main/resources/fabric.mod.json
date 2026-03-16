@@ -1,0 +1,40 @@
+{
+	"schemaVersion": 1,
+	"id": "iris-extension",
+	"version": "${version}",
+	"name": "iris extension",
+	"description": "An extension for the Minecraft shader loader Iris.",
+	"authors": [
+		"Merlin1809"
+	],
+	"contact": {
+		"homepage": "https://github.com/Merlin1809/IrisExtension",
+		"sources": "https://github.com/Merlin1809/IrisExtension.git",
+		"issues": "https://github.com/Merlin1809/IrisExtension/issues"
+	},
+	"license": "CC BY-NC-SA 4.0",
+	"icon": "assets/iris-extension/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"merlin1809.irisextension.IrisExtension"
+		],
+		"client": [
+			"merlin1809.irisextension.IrisExtensionClient"
+		]
+	},
+	"mixins": [
+		"iris-extension.mixins.json",
+		{
+			"config": "iris-extension.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.18.4",
+		"minecraft": "~1.21.11",
+		"java": ">=21",
+		"fabric-api": "*",
+		"iris": ">=1.10.5"
+	}
+}

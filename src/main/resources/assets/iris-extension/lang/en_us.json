@@ -1,0 +1,25 @@
+{
+    "key.category.iris_extension.keybinds": "Iris Extension",
+
+    "iris_extension.keybind.key0": "Custom Key 0",
+    "iris_extension.keybind.key1": "Custom Key 1",
+    "iris_extension.keybind.key2": "Custom Key 2",
+    "iris_extension.keybind.key3": "Custom Key 3",
+    "iris_extension.keybind.key4": "Custom Key 4",
+    "iris_extension.keybind.key5": "Custom Key 5",
+    "iris_extension.keybind.key6": "Custom Key 6",
+    "iris_extension.keybind.key7": "Custom Key 7",
+    "iris_extension.keybind.key8": "Custom Key 8",
+    "iris_extension.keybind.key9": "Custom Key 9",
+
+    "iris_extension.keybind.key0.short": "Key 0",
+    "iris_extension.keybind.key1.short": "Key 1",
+    "iris_extension.keybind.key2.short": "Key 2",
+    "iris_extension.keybind.key3.short": "Key 3",
+    "iris_extension.keybind.key4.short": "Key 4",
+    "iris_extension.keybind.key5.short": "Key 5",
+    "iris_extension.keybind.key6.short": "Key 6",
+    "iris_extension.keybind.key7.short": "Key 7",
+    "iris_extension.keybind.key8.short": "Key 8",
+    "iris_extension.keybind.key9.short": "Key 9"
+}

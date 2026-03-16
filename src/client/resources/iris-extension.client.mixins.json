@@ -1,0 +1,15 @@
+{
+	"required": true,
+	"package": "merlin1809.irisextension.mixin.client",
+	"compatibilityLevel": "JAVA_21",
+	"client": [
+		"UniformMixin",
+		"GetShaderPropertiesMixin",
+		"KeybindMixin",
+		"ProgramMixin",
+		"ShaderScreenMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}
