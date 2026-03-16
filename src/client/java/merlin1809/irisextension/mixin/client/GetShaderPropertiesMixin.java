@@ -42,7 +42,9 @@ public class GetShaderPropertiesMixin {
 
     @Inject(at = @At("TAIL"), method = "<init>(Ljava/lang/String;Lnet/irisshaders/iris/shaderpack/option/ShaderPackOptions;Ljava/lang/Iterable;)V", locals = LocalCapture.CAPTURE_FAILHARD)
     private void getShaderProperties(String contents, ShaderPackOptions shaderPackOptions, Iterable<StringPair> environmentDefines, CallbackInfo ci, String preprocessedContents, Properties preprocessed, Properties original) {
-		for (int i = 0; i < 10; i++) {
+		Variables.customKeyMethods = new int[10];
+
+        for (int i = 0; i < 10; i++) {
             String propValue = preprocessed.getProperty("iext_key." + i);
             if (propValue == null) continue;
 

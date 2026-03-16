@@ -51,7 +51,11 @@ public class ShaderScreenMixin {
 
     private boolean hasKeybinds() {
         if (Iris.getCurrentPack().isEmpty() || !optionMenuOpen || shaderOptionList == null) return false;
-        if(Variables.customKeyMethods.length != 0) return true;
+        for (int i = 0; i < 10; i++) {
+            if (Variables.customKeyMethods[i] != 0) {
+                return true;
+            }
+        }
         return false;
     }
 
