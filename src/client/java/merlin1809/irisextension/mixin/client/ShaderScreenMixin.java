@@ -59,40 +59,26 @@ public class ShaderScreenMixin {
         return false;
     }
 
+    private void setOptionsWidth() {
+        if(shaderOptionList != null) {
+            ShaderPackScreen self = (ShaderPackScreen)(Object)this;
+            int widthNew = hasKeybinds() ? self.width - PANEL_WIDTH - 4 : self.width;
+
+            shaderOptionList.setWidth(widthNew);
+            shaderOptionList.rebuild();
+        }
+    }
+
     @Inject(method = "refreshForChangedPack", at = @At("TAIL"))
     private void changeOnPackChange(CallbackInfo ci) {
-        ShaderPackScreen self = (ShaderPackScreen)(Object)this;
-        self.init(self.width, self.height);
+        setOptionsWidth();
     }
 
-    @Redirect(
-        method = "init",
-        at = @At(
-            value = "NEW",
-            target = "net/irisshaders/iris/gui/element/ShaderPackSelectionList"
-        ),
-        remap = false
-    )
-    private ShaderPackSelectionList fixWidth(ShaderPackScreen screen, Minecraft minecraft, int width, int height, int top, int bottom, int left, int right) {
-        if (!hasKeybinds()) {
-            return new ShaderPackSelectionList(screen, minecraft, width, height, top, bottom, left, right);
-        }
-        return new ShaderPackSelectionList(screen, minecraft, width - PANEL_WIDTH - 4, height, top, bottom, left, right - PANEL_WIDTH - 4);
-    }
+    @Inject(method = "init", at = @At("TAIL"))
+    private ShaderPackOptionList fixOptionWidth(CallbackInfo ci) {
+        setOptionsWidth();
 
-    @Redirect(
-        method = "init",
-        at = @At(
-            value = "NEW",
-            target = "net/irisshaders/iris/gui/element/ShaderPackOptionList"
-        ),
-        remap = false
-    )
-    private ShaderPackOptionList fixOptionWidth(ShaderPackScreen screen, NavigationController nav, ShaderPack pack, Minecraft minecraft, int width, int height, int top, int bottom, int left, int right) {
-        if (!hasKeybinds()) {
-            return new ShaderPackOptionList(screen, nav, pack, minecraft, width, height, top, bottom, left, right);
-        }
-        return new ShaderPackOptionList(screen, nav, pack, minecraft, width - PANEL_WIDTH - 4, height, top, bottom, left, right - PANEL_WIDTH - 4);
+        return shaderOptionList;
     }
 
     @Inject(method = "render", at = @At("TAIL"))
