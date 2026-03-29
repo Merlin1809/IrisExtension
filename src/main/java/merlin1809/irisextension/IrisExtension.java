@@ -18,6 +18,6 @@ public class IrisExtension implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		PayloadTypeRegistry.playS2C().register(DragonUniformsPayload.ID, DragonUniformsPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(DragonUniformsPayload.ID, DragonUniformsPayload.CODEC);
 	}
 }

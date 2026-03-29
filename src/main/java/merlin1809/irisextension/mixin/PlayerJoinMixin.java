@@ -3,7 +3,7 @@ package merlin1809.irisextension.mixin;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.dimension.end.EndDragonFight;
+import net.minecraft.world.level.dimension.end.EnderDragonFight;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
@@ -33,7 +33,7 @@ public class PlayerJoinMixin {
                return;
             }
 
-            EndDragonFight fight = endLevel.getDragonFight();
+            EnderDragonFight fight = endLevel.getDragonFight();
             boolean dragonAlive = fight != null && !((GetDragonKilledMixin)fight).isDragonKilled();
             boolean firstDragonKilled = fight != null && ((GetDragonKilledMixin)fight).firstDragonKilled();
             int crystals = 0;

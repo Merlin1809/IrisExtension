@@ -15,20 +15,20 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
-import net.minecraft.world.level.dimension.end.EndDragonFight;
+import net.minecraft.world.level.dimension.end.EnderDragonFight;
 
 import org.jspecify.annotations.Nullable;
 
-@Mixin({EndDragonFight.class})
+@Mixin({EnderDragonFight.class})
 public class DragonFightMixin {
     @Shadow
    private ServerLevel level;
    @Shadow
    private boolean dragonKilled;
    @Shadow
-   private boolean previouslyKilled;
+   private boolean hasPreviouslyKilledDragon;
    @Shadow
-   private int crystalsAlive;
+   private int aliveCrystals;
    @Shadow
    private ServerBossEvent dragonEvent;
    @Shadow
@@ -51,13 +51,13 @@ public class DragonFightMixin {
 
         float progress = this.dragonEvent.getProgress();
 
-        if(this.dragonKilledPrevious != this.dragonKilled || this.previousPlayerCount != players || this.previousCrystals != this.crystalsAlive || Math.abs(progress - this.previousProgress) > 0.025f) {
-            sendDragonStuff(!dragonKilled, previouslyKilled, crystalsAlive, players, progress);
+        if(this.dragonKilledPrevious != this.dragonKilled || this.previousPlayerCount != players || this.previousCrystals != this.aliveCrystals || Math.abs(progress - this.previousProgress) > 0.025f) {
+            sendDragonStuff(!dragonKilled, hasPreviouslyKilledDragon, aliveCrystals, players, progress);
         }
 
         this.dragonKilledPrevious = this.dragonKilled;
         this.previousPlayerCount = players;
-        this.previousCrystals = this.crystalsAlive;
+        this.previousCrystals = this.aliveCrystals;
         this.previousProgress = progress;
     }
 

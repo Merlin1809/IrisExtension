@@ -28,8 +28,8 @@ import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.oxcodsnet.beltborne_lanterns.common.BeltState;
-import sereneseasons.api.season.SeasonHelper;
+// import net.oxcodsnet.beltborne_lanterns.common.BeltState;
+// import sereneseasons.api.season.SeasonHelper;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.world.effect.MobEffects;
@@ -51,34 +51,34 @@ public class UniformMixin {
 			uniforms.uniform1b(UniformUpdateFrequency.PER_FRAME, "IEXT_KEY_" + index, () -> merlin1809.irisextension.Variables.keyPressed[index]);
 		}
 
-		uniforms.uniform1i(UniformUpdateFrequency.PER_TICK, "IEXT_season", () -> {
-			ClientLevel level = Minecraft.getInstance().level;
-			return level != null && isSereneSeasonsLoaded ? SeasonHelper.getSeasonState(level).getSeason().ordinal() : 0;
-		});
-		uniforms.uniform1i(UniformUpdateFrequency.PER_TICK, "IEXT_sub_season", () -> {
-			ClientLevel level = Minecraft.getInstance().level;
-			return level != null && isSereneSeasonsLoaded ? SeasonHelper.getSeasonState(level).getSubSeason().ordinal() : 0;
-		});
-		uniforms.uniform1i(UniformUpdateFrequency.PER_TICK, "IEXT_tropical_season", () -> {
-			ClientLevel level = Minecraft.getInstance().level;
-			return level != null && isSereneSeasonsLoaded ? SeasonHelper.getSeasonState(level).getTropicalSeason().ordinal() : 0;
-		});
-		uniforms.uniform1i(UniformUpdateFrequency.PER_TICK, "IEXT_season_cycle_ticks", () -> {
-			ClientLevel level = Minecraft.getInstance().level;
-			return level != null && isSereneSeasonsLoaded ? SeasonHelper.getSeasonState(level).getSeasonCycleTicks() : 0;
-		});
-		uniforms.uniform1i(UniformUpdateFrequency.PER_TICK, "IEXT_season_day_duration", () -> {
-			ClientLevel level = Minecraft.getInstance().level;
-			return level != null && isSereneSeasonsLoaded ? SeasonHelper.getSeasonState(level).getDayDuration() : 0;
-		});
-		uniforms.uniform1i(UniformUpdateFrequency.PER_TICK, "IEXT_sub_season_duration", () -> {
-			ClientLevel level = Minecraft.getInstance().level;
-			return level != null && isSereneSeasonsLoaded ? SeasonHelper.getSeasonState(level).getSubSeasonDuration() : 0;
-		});
-		uniforms.uniform1i(UniformUpdateFrequency.PER_TICK, "IEXT_season_day", () -> {
-			ClientLevel level = Minecraft.getInstance().level;
-			return level != null && isSereneSeasonsLoaded ? SeasonHelper.getSeasonState(level).getDay() : 0;
-		});
+		// uniforms.uniform1i(UniformUpdateFrequency.PER_TICK, "IEXT_season", () -> {
+		// 	ClientLevel level = Minecraft.getInstance().level;
+		// 	return level != null && isSereneSeasonsLoaded ? SeasonHelper.getSeasonState(level).getSeason().ordinal() : 0;
+		// });
+		// uniforms.uniform1i(UniformUpdateFrequency.PER_TICK, "IEXT_sub_season", () -> {
+		// 	ClientLevel level = Minecraft.getInstance().level;
+		// 	return level != null && isSereneSeasonsLoaded ? SeasonHelper.getSeasonState(level).getSubSeason().ordinal() : 0;
+		// });
+		// uniforms.uniform1i(UniformUpdateFrequency.PER_TICK, "IEXT_tropical_season", () -> {
+		// 	ClientLevel level = Minecraft.getInstance().level;
+		// 	return level != null && isSereneSeasonsLoaded ? SeasonHelper.getSeasonState(level).getTropicalSeason().ordinal() : 0;
+		// });
+		// uniforms.uniform1i(UniformUpdateFrequency.PER_TICK, "IEXT_season_cycle_ticks", () -> {
+		// 	ClientLevel level = Minecraft.getInstance().level;
+		// 	return level != null && isSereneSeasonsLoaded ? SeasonHelper.getSeasonState(level).getSeasonCycleTicks() : 0;
+		// });
+		// uniforms.uniform1i(UniformUpdateFrequency.PER_TICK, "IEXT_season_day_duration", () -> {
+		// 	ClientLevel level = Minecraft.getInstance().level;
+		// 	return level != null && isSereneSeasonsLoaded ? SeasonHelper.getSeasonState(level).getDayDuration() : 0;
+		// });
+		// uniforms.uniform1i(UniformUpdateFrequency.PER_TICK, "IEXT_sub_season_duration", () -> {
+		// 	ClientLevel level = Minecraft.getInstance().level;
+		// 	return level != null && isSereneSeasonsLoaded ? SeasonHelper.getSeasonState(level).getSubSeasonDuration() : 0;
+		// });
+		// uniforms.uniform1i(UniformUpdateFrequency.PER_TICK, "IEXT_season_day", () -> {
+		// 	ClientLevel level = Minecraft.getInstance().level;
+		// 	return level != null && isSereneSeasonsLoaded ? SeasonHelper.getSeasonState(level).getDay() : 0;
+		// });
 		uniforms.uniform1b(UniformUpdateFrequency.PER_TICK, "IEXT_poison_effect", () -> {
 			Player player = Minecraft.getInstance().player;
 			if (player == null) {
@@ -346,25 +346,25 @@ public class UniformMixin {
 				}
 			}
 		});
-		uniforms.uniform1i(UniformUpdateFrequency.PER_TICK, "IEXT_beltborne_lanterns_Id", () -> {
-			Player player = Minecraft.getInstance().player;
-			if (player != null && isBeltborneLanternsLoaded) {
-				Item lamp = BeltState.getLamp(player);
-				if (lamp == null) {
-				return 0;
-				} else {
-				Object2IntFunction<NamespacedId> itemId = WorldRenderingSettings.INSTANCE.getItemIds();
-				if (itemId == null) {
-					return 0;
-				} else {
-					Identifier id = BuiltInRegistries.ITEM.getKey(lamp);
-					return itemId.applyAsInt(new NamespacedId(id.getNamespace(), id.getPath()));
-				}
-				}
-			} else {
-				return 0;
-			}
-		});
+		// uniforms.uniform1i(UniformUpdateFrequency.PER_TICK, "IEXT_beltborne_lanterns_Id", () -> {
+		// 	Player player = Minecraft.getInstance().player;
+		// 	if (player != null && isBeltborneLanternsLoaded) {
+		// 		Item lamp = BeltState.getLamp(player);
+		// 		if (lamp == null) {
+		// 		return 0;
+		// 		} else {
+		// 		Object2IntFunction<NamespacedId> itemId = WorldRenderingSettings.INSTANCE.getItemIds();
+		// 		if (itemId == null) {
+		// 			return 0;
+		// 		} else {
+		// 			Identifier id = BuiltInRegistries.ITEM.getKey(lamp);
+		// 			return itemId.applyAsInt(new NamespacedId(id.getNamespace(), id.getPath()));
+		// 		}
+		// 		}
+		// 	} else {
+		// 		return 0;
+		// 	}
+		// });
 		uniforms.uniform1i(UniformUpdateFrequency.PER_TICK, "IEXT_vehicle_armor_Id", () -> {
 			Player player = Minecraft.getInstance().player;
 			if (player == null) {

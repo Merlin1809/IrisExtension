@@ -11,7 +11,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
@@ -59,44 +59,30 @@ public class ShaderScreenMixin {
         return false;
     }
 
+    private void setOptionsWidth() {
+        if(shaderOptionList != null) {
+            ShaderPackScreen self = (ShaderPackScreen)(Object)this;
+            int widthNew = hasKeybinds() ? self.width - PANEL_WIDTH - 4 : self.width;
+
+            shaderOptionList.setWidth(widthNew);
+            shaderOptionList.rebuild();
+        }
+    }
+
     @Inject(method = "refreshForChangedPack", at = @At("TAIL"))
     private void changeOnPackChange(CallbackInfo ci) {
-        ShaderPackScreen self = (ShaderPackScreen)(Object)this;
-        self.init(self.width, self.height);
+        setOptionsWidth();
     }
 
-    @Redirect(
-        method = "init",
-        at = @At(
-            value = "NEW",
-            target = "net/irisshaders/iris/gui/element/ShaderPackSelectionList"
-        ),
-        remap = false
-    )
-    private ShaderPackSelectionList fixWidth(ShaderPackScreen screen, Minecraft minecraft, int width, int height, int top, int bottom, int left, int right) {
-        if (!hasKeybinds()) {
-            return new ShaderPackSelectionList(screen, minecraft, width, height, top, bottom, left, right);
-        }
-        return new ShaderPackSelectionList(screen, minecraft, width - PANEL_WIDTH - 4, height, top, bottom, left, right - PANEL_WIDTH - 4);
+    @Inject(method = "init", at = @At("TAIL"))
+    private ShaderPackOptionList fixOptionWidth(CallbackInfo ci) {
+        setOptionsWidth();
+
+        return shaderOptionList;
     }
 
-    @Redirect(
-        method = "init",
-        at = @At(
-            value = "NEW",
-            target = "net/irisshaders/iris/gui/element/ShaderPackOptionList"
-        ),
-        remap = false
-    )
-    private ShaderPackOptionList fixOptionWidth(ShaderPackScreen screen, NavigationController nav, ShaderPack pack, Minecraft minecraft, int width, int height, int top, int bottom, int left, int right) {
-        if (!hasKeybinds()) {
-            return new ShaderPackOptionList(screen, nav, pack, minecraft, width, height, top, bottom, left, right);
-        }
-        return new ShaderPackOptionList(screen, nav, pack, minecraft, width - PANEL_WIDTH - 4, height, top, bottom, left, right - PANEL_WIDTH - 4);
-    }
-
-    @Inject(method = "render", at = @At("TAIL"))
-    private void renderKeybindPanel(GuiGraphics graphics, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+    @Inject(method = "extractRenderState", at = @At("TAIL"))
+    private void renderKeybindPanel(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         if (!hasKeybinds() || guiHidden) return;
         ShaderPackScreen self = (ShaderPackScreen)(Object)this;
         Font font = Minecraft.getInstance().font;
@@ -107,7 +93,7 @@ public class ShaderScreenMixin {
 
         graphics.fill(panelX, panelY, self.width, panelY + panelHeight, 0x55000000);
 
-        graphics.drawString(font, Component.literal("Shader Keybinds").withStyle(ChatFormatting.WHITE), panelX + PANEL_PADDING, panelY + PANEL_PADDING, 0xFFFFFFFF);
+        graphics.text(font, Component.literal("Shader Keybinds").withStyle(ChatFormatting.WHITE), panelX + PANEL_PADDING, panelY + PANEL_PADDING, 0xFFFFFFFF);
 
         graphics.fill(panelX + 2, panelY + 15, panelX + PANEL_WIDTH - 2, panelY + 16, 0xFF888888);
 
@@ -122,16 +108,16 @@ public class ShaderScreenMixin {
             if (mapping != null) {
                 Component boundKey = mapping.getTranslatedKeyMessage();
                 int keyWidth = font.width(boundKey);
-                graphics.drawString(font, boundKey, panelX + PANEL_WIDTH - keyWidth - PANEL_PADDING, rowY, 0xFFAAAAAA);
+                graphics.text(font, boundKey, panelX + PANEL_WIDTH - keyWidth - PANEL_PADDING, rowY, 0xFFAAAAAA);
             }
 
-            if (Variables.customKeyMethods[i] != 0) {                
+            if (Variables.customKeyMethods[i] != 0) {
                 String shaderName = defaultName + ": " + Language.getInstance().getOrDefault(baseKey + ".name", "");
                 String truncated = font.plainSubstrByWidth(shaderName, PANEL_WIDTH - 8);
-                graphics.drawString(font, truncated, panelX + PANEL_PADDING, rowY, 0xFFFFFF55);
+                graphics.text(font, truncated, panelX + PANEL_PADDING, rowY, 0xFFFFFF55);
             } else {
                 String truncated = font.plainSubstrByWidth(defaultName, PANEL_WIDTH - 8);
-                graphics.drawString(font, truncated, panelX + PANEL_PADDING, rowY, 0xFF888888);
+                graphics.text(font, truncated, panelX + PANEL_PADDING, rowY, 0xFF888888);
             }
         }
     }

@@ -1,6 +1,5 @@
 package merlin1809.irisextension.networking;
 
-import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientPacketCodec;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.Identifier;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
