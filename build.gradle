@@ -46,13 +46,13 @@ dependencies {
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
 	// iris
-	implementation "maven.modrinth:YL57xq9U:Yi5E3d2l"
+	implementation "maven.modrinth:YL57xq9U:oaD6KQls"
 
 	// beltborne lanterns
 	// implementation "maven.modrinth:NUFDZAKS:bFprRSZy"
 
 	// serene seasons
-	// implementation "maven.modrinth:e0bNACJD:8NezTPob"
+	implementation "maven.modrinth:e0bNACJD:13sXhUkI"
 	
 }
 

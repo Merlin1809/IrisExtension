@@ -175,7 +175,7 @@ public class UniformMixin {
 
 				if(sameDim) {
 					BlockPos pos = deathLocation.get().pos();
-					return new Vec3(pos.getX(), pos.getY(), pos.getZ()).subtract(Minecraft.getInstance().gameRenderer.getMainCamera().position()).toVector3f();
+					return new Vec3(pos.getX(), pos.getY(), pos.getZ()).subtract(Minecraft.getInstance().gameRenderer.mainCamera().position()).toVector3f();
 				}
 			}
 
@@ -190,7 +190,7 @@ public class UniformMixin {
 				if(hook == null) {
 					return new Vector3f(0.0f);
 				} else {
-					return hook.position().subtract(Minecraft.getInstance().gameRenderer.getMainCamera().position()).toVector3f();
+					return hook.position().subtract(Minecraft.getInstance().gameRenderer.mainCamera().position()).toVector3f();
 				}
 			}
 		});
