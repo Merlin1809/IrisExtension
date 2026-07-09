@@ -104,7 +104,7 @@ public class ShaderScreenMixin {
 
             if (rowY + 10 > panelY + panelHeight) break;
 
-            KeyMapping mapping = KeyMapping.get(baseKey);
+            KeyMapping mapping = Variables.customKeybinds[i];
             if (mapping != null) {
                 Component boundKey = mapping.getTranslatedKeyMessage();
                 int keyWidth = font.width(boundKey);

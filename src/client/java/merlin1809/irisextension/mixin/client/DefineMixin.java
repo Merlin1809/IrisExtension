@@ -38,5 +38,9 @@ public class DefineMixin {
             define(standardDefines, "BELTBORNE_LANTERNS");
         }
 
+        if (Variables.isCreateAeronauticsLoaded) {
+            define(standardDefines, "CREATE_AERONAUTICS");
+        }
+
     }
 }

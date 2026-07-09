@@ -11,6 +11,7 @@ public class IrisExtensionClient implements ClientModInitializer {
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
 		if (FabricLoader.getInstance().isModLoaded("sereneseasons")) merlin1809.irisextension.Variables.isSereneSeasonsLoaded = true;
 		if (FabricLoader.getInstance().isModLoaded("beltborne_lanterns")) merlin1809.irisextension.Variables.isBeltborneLanternsLoaded = true;
+		if (FabricLoader.getInstance().isModLoaded("aeronautics")) merlin1809.irisextension.Variables.isCreateAeronauticsLoaded = true;
 
 		ClientPlayNetworking.registerGlobalReceiver(DragonUniformsPayload.ID, (payload, context) -> context.client().execute(() -> {
             Variables.dragonAlive = payload.dragonAlive();

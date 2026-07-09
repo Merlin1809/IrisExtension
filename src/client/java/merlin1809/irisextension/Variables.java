@@ -9,8 +9,11 @@ import java.util.Map;
 import java.util.Set;
 
 import merlin1809.irisextension.mixin.client.GetShaderPropertiesMixin;
+import net.minecraft.client.KeyMapping;
 
 public class Variables {
+    public static KeyMapping[] customKeybinds = new KeyMapping[10];
+
     public static Set<String> tessellationPrograms = new HashSet<>();
     public static Set<String> geometryPrograms = new HashSet<>();
 
@@ -22,6 +25,7 @@ public class Variables {
 
     public static boolean isSereneSeasonsLoaded = false;
     public static boolean isBeltborneLanternsLoaded = false;
+    public static boolean isCreateAeronauticsLoaded = false;
 
     public static boolean[] keyPressed = new boolean[10];
 

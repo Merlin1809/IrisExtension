@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import it.unimi.dsi.fastutil.objects.Object2IntFunction;
+import merlin1809.irisextension.SeasonHelperReflect;
 import merlin1809.irisextension.Variables;
 import net.irisshaders.iris.gl.uniform.UniformHolder;
 import net.irisshaders.iris.gl.uniform.UniformUpdateFrequency;
@@ -20,15 +21,15 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.oxcodsnet.beltborne_lanterns.common.BeltState;
 import sereneseasons.api.season.SeasonHelper;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.fabricmc.loader.api.FabricLoader;
@@ -39,13 +40,37 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 import java.util.Optional;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
+
 @Mixin(IrisExclusiveUniforms.class)
 public class UniformMixin {
 	private static boolean isSereneSeasonsLoaded = merlin1809.irisextension.Variables.isSereneSeasonsLoaded;
    	private static boolean isBeltborneLanternsLoaded = merlin1809.irisextension.Variables.isBeltborneLanternsLoaded;
 
+	private static Method GET_LAMP_METHOD = null;
+
+	private static Item getLampSafe(Player player) {
+		if (GET_LAMP_METHOD == null && Variables.isBeltborneLanternsLoaded) {
+			try {
+				Class<?> clazz = Class.forName("net.oxcodsnet.beltborne_lanterns.common.BeltState");
+				GET_LAMP_METHOD = clazz.getMethod("getLamp", Player.class);
+			} catch (Exception e) {
+				Variables.isBeltborneLanternsLoaded = false;
+				return null;
+			}
+		}
+		if (GET_LAMP_METHOD != null) {
+			try {
+				return (Item) GET_LAMP_METHOD.invoke(null, player);
+			} catch (Exception e) {
+			}
+		}
+		return null;
+	}
+
 	@Inject(at = @At("HEAD"), method = "addIrisExclusiveUniforms")
-	private static void addUniformsNewIris(UniformHolder uniforms, FrameUpdateNotifier updateNotifier, CallbackInfo ci) {
+	private static void addUniformsNewIris(UniformHolder uniforms, CallbackInfo ci) {
    		for (int i = 0; i < 10; i++) {
 			final int index = i;
 			uniforms.uniform1b(UniformUpdateFrequency.PER_FRAME, "IEXT_KEY_" + index, () -> merlin1809.irisextension.Variables.keyPressed[index]);
@@ -53,31 +78,31 @@ public class UniformMixin {
 
 		uniforms.uniform1i(UniformUpdateFrequency.PER_TICK, "IEXT_season", () -> {
 			ClientLevel level = Minecraft.getInstance().level;
-			return level != null && isSereneSeasonsLoaded ? SeasonHelper.getSeasonState(level).getSeason().ordinal() : 0;
+			return level != null && isSereneSeasonsLoaded ? SeasonHelperReflect.getSeasonOrdinal(level) : 0;
 		});
 		uniforms.uniform1i(UniformUpdateFrequency.PER_TICK, "IEXT_sub_season", () -> {
 			ClientLevel level = Minecraft.getInstance().level;
-			return level != null && isSereneSeasonsLoaded ? SeasonHelper.getSeasonState(level).getSubSeason().ordinal() : 0;
+			return level != null && isSereneSeasonsLoaded ? SeasonHelperReflect.getSubSeasonOrdinal(level) : 0;
 		});
 		uniforms.uniform1i(UniformUpdateFrequency.PER_TICK, "IEXT_tropical_season", () -> {
 			ClientLevel level = Minecraft.getInstance().level;
-			return level != null && isSereneSeasonsLoaded ? SeasonHelper.getSeasonState(level).getTropicalSeason().ordinal() : 0;
+			return level != null && isSereneSeasonsLoaded ? SeasonHelperReflect.getTropicalSeasonOrdinal(level) : 0;
 		});
 		uniforms.uniform1i(UniformUpdateFrequency.PER_TICK, "IEXT_season_cycle_ticks", () -> {
 			ClientLevel level = Minecraft.getInstance().level;
-			return level != null && isSereneSeasonsLoaded ? SeasonHelper.getSeasonState(level).getSeasonCycleTicks() : 0;
+			return level != null && isSereneSeasonsLoaded ? SeasonHelperReflect.getSeasonCycleTicks(level) : 0;
 		});
 		uniforms.uniform1i(UniformUpdateFrequency.PER_TICK, "IEXT_season_day_duration", () -> {
 			ClientLevel level = Minecraft.getInstance().level;
-			return level != null && isSereneSeasonsLoaded ? SeasonHelper.getSeasonState(level).getDayDuration() : 0;
+			return level != null && isSereneSeasonsLoaded ? SeasonHelperReflect.getDayDuration(level) : 0;
 		});
 		uniforms.uniform1i(UniformUpdateFrequency.PER_TICK, "IEXT_sub_season_duration", () -> {
 			ClientLevel level = Minecraft.getInstance().level;
-			return level != null && isSereneSeasonsLoaded ? SeasonHelper.getSeasonState(level).getSubSeasonDuration() : 0;
+			return level != null && isSereneSeasonsLoaded ? SeasonHelperReflect.getSubSeasonDuration(level) : 0;
 		});
 		uniforms.uniform1i(UniformUpdateFrequency.PER_TICK, "IEXT_season_day", () -> {
 			ClientLevel level = Minecraft.getInstance().level;
-			return level != null && isSereneSeasonsLoaded ? SeasonHelper.getSeasonState(level).getDay() : 0;
+			return level != null && isSereneSeasonsLoaded ? SeasonHelperReflect.getDay(level) : 0;
 		});
 		uniforms.uniform1b(UniformUpdateFrequency.PER_TICK, "IEXT_poison_effect", () -> {
 			Player player = Minecraft.getInstance().player;
@@ -116,7 +141,7 @@ public class UniformMixin {
 			if (player == null) {
 				return false;
 			} else {
-				return player.hasEffect(MobEffects.SPEED);
+				return player.hasEffect(MobEffects.MOVEMENT_SPEED);
 			}
 		});
 		uniforms.uniform1b(UniformUpdateFrequency.PER_TICK, "IEXT_slowness_effect", () -> {
@@ -124,7 +149,7 @@ public class UniformMixin {
 			if (player == null) {
 				return false;
 			} else {
-				return player.hasEffect(MobEffects.SLOWNESS);
+				return player.hasEffect(MobEffects.MOVEMENT_SLOWDOWN);
 			}
 		});
 		uniforms.uniform1b(UniformUpdateFrequency.PER_TICK, "IEXT_regeneration_effect", () -> {
@@ -175,7 +200,7 @@ public class UniformMixin {
 
 				if(sameDim) {
 					BlockPos pos = deathLocation.get().pos();
-					return new Vec3(pos.getX(), pos.getY(), pos.getZ()).subtract(Minecraft.getInstance().gameRenderer.getMainCamera().position()).toVector3f();
+					return new Vec3(pos.getX(), pos.getY(), pos.getZ()).subtract(Minecraft.getInstance().gameRenderer.getMainCamera().getPosition()).toVector3f();
 				}
 			}
 
@@ -190,7 +215,7 @@ public class UniformMixin {
 				if(hook == null) {
 					return new Vector3f(0.0f);
 				} else {
-					return hook.position().subtract(Minecraft.getInstance().gameRenderer.getMainCamera().position()).toVector3f();
+					return hook.position().subtract(Minecraft.getInstance().gameRenderer.getMainCamera().getPosition()).toVector3f();
 				}
 			}
 		});
@@ -212,7 +237,7 @@ public class UniformMixin {
 				if (itemId == null) {
 				return 0;
 				} else {
-				Identifier id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+				ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
 				return itemId.applyAsInt(new NamespacedId(id.getNamespace(), id.getPath()));
 				}
 			}
@@ -227,7 +252,7 @@ public class UniformMixin {
 				if (itemId == null) {
 				return 0;
 				} else {
-				Identifier id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+				ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
 				return itemId.applyAsInt(new NamespacedId(id.getNamespace(), id.getPath()));
 				}
 			}
@@ -242,7 +267,7 @@ public class UniformMixin {
 				if (itemId == null) {
 				return 0;
 				} else {
-				Identifier id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+				ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
 				return itemId.applyAsInt(new NamespacedId(id.getNamespace(), id.getPath()));
 				}
 			}
@@ -257,7 +282,7 @@ public class UniformMixin {
 				if (itemId == null) {
 				return 0;
 				} else {
-				Identifier id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+				ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
 				return itemId.applyAsInt(new NamespacedId(id.getNamespace(), id.getPath()));
 				}
 			}
@@ -338,18 +363,18 @@ public class UniformMixin {
 			} else {
 				Entity vehicle = player.getVehicle();
 				if (vehicle == null) {
-				return false;
-				} else if (vehicle instanceof Mob mob) {
-				return mob.getItemBySlot(EquipmentSlot.SADDLE).hasFoil();
+					return false;
+				} else if (vehicle instanceof AbstractHorse horse) {
+					return horse.getSlot(400).get().hasFoil();
 				} else {
-				return false;
+					return false;
 				}
 			}
 		});
 		uniforms.uniform1i(UniformUpdateFrequency.PER_TICK, "IEXT_beltborne_lanterns_Id", () -> {
 			Player player = Minecraft.getInstance().player;
 			if (player != null && isBeltborneLanternsLoaded) {
-				Item lamp = BeltState.getLamp(player);
+				Item lamp = getLampSafe(player);
 				if (lamp == null) {
 				return 0;
 				} else {
@@ -357,7 +382,7 @@ public class UniformMixin {
 				if (itemId == null) {
 					return 0;
 				} else {
-					Identifier id = BuiltInRegistries.ITEM.getKey(lamp);
+					ResourceLocation id = BuiltInRegistries.ITEM.getKey(lamp);
 					return itemId.applyAsInt(new NamespacedId(id.getNamespace(), id.getPath()));
 				}
 				}
@@ -376,7 +401,7 @@ public class UniformMixin {
 					if (itemId == null) {
 						return 0;
 					} else {
-						Identifier id = BuiltInRegistries.ITEM.getKey(mob.getItemBySlot(EquipmentSlot.BODY).getItem());
+						ResourceLocation id = BuiltInRegistries.ITEM.getKey(mob.getItemBySlot(EquipmentSlot.BODY).getItem());
 						return itemId.applyAsInt(new NamespacedId(id.getNamespace(), id.getPath()));
 					}
 				} else {
@@ -390,12 +415,12 @@ public class UniformMixin {
 				return 0;
 			} else {
 				Entity vehicle = player.getVehicle();
-				if (vehicle instanceof Mob mob) {
+				if (vehicle instanceof AbstractHorse horse) {
 					Object2IntFunction<NamespacedId> itemId = WorldRenderingSettings.INSTANCE.getItemIds();
 					if (itemId == null) {
 						return 0;
 					} else {
-						Identifier id = BuiltInRegistries.ITEM.getKey(mob.getItemBySlot(EquipmentSlot.SADDLE).getItem());
+						ResourceLocation id = BuiltInRegistries.ITEM.getKey(horse.getSlot(400).get().getItem());
 						return itemId.applyAsInt(new NamespacedId(id.getNamespace(), id.getPath()));
 					}
 				} else {
